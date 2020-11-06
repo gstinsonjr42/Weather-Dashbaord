@@ -1,22 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-     <script type="text/javascript">
-     // queryURL for weather API
-     var queryURL = "http://api.openweathermap.org/data/2.5/forecast?id=524901&appid=f8f633a2035f56ad20f8189a104ba22f"
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-          }).then(function(response) {
-            console.log(response);
-          });
-     </script>
+
+    <head>
+      <meta charset="utf-8">
+      <title>OpenWeatherMap</title>
+    </head>
     
-</body>
-</html>
+    <body>
+      <!-- Retrieved data will be dumped here -->
+      <div class="city"></div>
+      <div class="wind"></div>
+      <div class="humidity"></div>
+      <div class="temp"></div>
+      
+    
+      <!-- Add extra div for the bonus Fahrenheit temp -->
+      <div class="tempF"></div>
+
+      <form id="city-form">
+        <label for="city-input">Search for a city</label>
+        <input type="text" id="city-input"><br>
+  
+        <!-- This button will trigger our AJAX call -->
+        <input id="find-city" type="submit" value="Search for City">
+      </form>
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+      <script type="text/javascript">
+        //globals
+        var date = moment().format("MMM Do YYYY")
+
+        $("#find-city").on("click", function(event) {
+
+        // event.preventDefault() can be used to prevent an event's default behavior.
+        // Here, it prevents the submit button from trying to submit a form when clicked
+        event.preventDefault();
+
+        // Here we grab the text from the input box
+        var cityName = $("#city-input").val();
+
+      
+        // This is our API key
+        var APIKey = "f8f633a2035f56ad20f8189a104ba22f";
+    
+        // Here we are building the URL we need to query the database
+        var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + APIKey;
+    
+        // Here we run our AJAX call to the OpenWeatherMap API
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        })
+
+          // We store all of the retrieved data inside of an object called "response"
+          .then(function(response) {
+    
+            // Log the queryURL
+            console.log(queryURL);
+    
+            // Log the resulting object
+            console.log(cityName);
+    
+            // Transfer content to HTML
+            $(".city").html("<h1>" + cityName + " " + date + "</h1>");
+            $(".wind").text("Wind Speed: " + response.wind.speed + "MPH");
+            $(".humidity").text("Humidity: " + response.main.humidity + "%");
+            
+            // Convert the temp to fahrenheit
+            var tempF = (response.main.temp - 273.15) * 1.80 + 32;
+    
+            // add temp content to html
+            $(".temp").text("Temperature (K) " + response.main.temp);
+            $(".tempF").text("Temperature (F) " + tempF.toFixed(2));
+    
+            // Log the data in the console as well
+            console.log("Wind Speed: " + response.wind.speed);
+            console.log("Humidity: " + response.main.humidity);
+            console.log("Temperature (F): " + tempF);
+          });
+        }); 
+      </script>
+    </body>
+    
+    </html>
+    
