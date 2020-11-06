@@ -4,26 +4,56 @@
     <head>
       <meta charset="utf-8">
       <title>OpenWeatherMap</title>
+      <style type="text/css">
+        .content{
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            width: 800px;
+            height: 500px;
+            border: 12px solid #273e63;
+            background-color: dodgerblue;
+        }
+
+        #find-city{
+        position: fixed;
+        top: 40px;
+        left: 10px;
+        width: 300px;
+        height: 40px;
+        border: 3px solid  #273e63;
+        background-color: goldenrod;
+        }
+        #city-input{
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        width: 300px;
+        border: 3px solid  #273e63;
+        background-color: #979ba0; goldenrod;
+        }
+      </style>
     </head>
     
     <body>
       <!-- Retrieved data will be dumped here -->
-      <div class="city"></div>
-      <div class="wind"></div>
-      <div class="humidity"></div>
-      <div class="temp"></div>
-      
-    
-      <!-- Add extra div for the bonus Fahrenheit temp -->
-      <div class="tempF"></div>
-
-      <form id="city-form">
-        <label for="city-input">Search for a city</label>
+    <div class = "container">
+    <div class = "content">
+        <div class="city"></div>
+        <div class="wind"></div>
+        <div class="humidity"></div>
+        <div class="temp"></div>
+        <div class ="forecast"></div>
+        <div class="tempF"></div>
+    </div>
+    <form id="city-form">
+        <label for="city-input">SEARCH</label>
         <input type="text" id="city-input"><br>
   
         <!-- This button will trigger our AJAX call -->
         <input id="find-city" type="submit" value="Search for City">
       </form>
+    </div>
     
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
@@ -42,10 +72,10 @@
 
       
         // This is our API key
-        var APIKey = "f8f633a2035f56ad20f8189a104ba22f";
+        var apiKey = "f8f633a2035f56ad20f8189a104ba22f";
     
         // Here we are building the URL we need to query the database
-        var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + APIKey;
+        var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + apiKey;
     
         // Here we run our AJAX call to the OpenWeatherMap API
         $.ajax({
@@ -66,6 +96,7 @@
             $(".city").html("<h1>" + cityName + " " + date + "</h1>");
             $(".wind").text("Wind Speed: " + response.wind.speed + "MPH");
             $(".humidity").text("Humidity: " + response.main.humidity + "%");
+            
             
             // Convert the temp to fahrenheit
             var tempF = (response.main.temp - 273.15) * 1.80 + 32;
