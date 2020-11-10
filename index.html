@@ -14,6 +14,31 @@
             border: 12px solid #273e63;
             background-color: dodgerblue;
         }
+        .city{
+            text-align: center;  
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+        .wind{
+            border: 3px solid #273e63;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+        .humidity{
+            border: 3px solid #273e63;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+        .tempF{
+            border: 3px solid #273e63;
+
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+        .container{
+            background-image: url(https://images.pexels.com/photos/2531709/pexels-photo-2531709.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260) ;
+            size: 100%;
+            height: 1426px;
+        }
 
         #find-city{
         position: fixed;
@@ -23,6 +48,7 @@
         height: 40px;
         border: 3px solid  #273e63;
         background-color: goldenrod;
+        transition: width 0.4s ease-in-out;
         }
         #city-input{
         position: fixed;
@@ -30,29 +56,36 @@
         left: 10px;
         width: 300px;
         border: 3px solid  #273e63;
-        background-color: #979ba0; goldenrod;
+        background-color: #979ba0; 
+        transition: width 0.4s ease-in-out;
         }
+        
       </style>
     </head>
     
     <body>
       <!-- Retrieved data will be dumped here -->
     <div class = "container">
-    <div class = "content">
-        <div class="city"></div>
-        <div class="wind"></div>
-        <div class="humidity"></div>
-        <div class="temp"></div>
-        <div class ="forecast"></div>
-        <div class="tempF"></div>
-    </div>
-    <form id="city-form">
-        <label for="city-input">SEARCH</label>
-        <input type="text" id="city-input"><br>
-  
-        <!-- This button will trigger our AJAX call -->
-        <input id="find-city" type="submit" value="Search for City">
-      </form>
+        <div class = "image"></div>
+        <div class = "content">
+            <div class="city"></div>
+            <div class="wind"></div>
+            <div class="humidity"></div>
+            <div class="temp"></div>
+            <div class ="forecast"></div>
+            <div class="tempF"></div>
+            <div class="history"></div>
+        </div>
+        <div class = "search-side-info">
+            <form id="city-form">
+                <label for="city-input"></label>
+                <input type="text" id="city-input"><br>
+        
+                <!-- This button will trigger our AJAX call -->
+                <input id="find-city" type="submit" value="Search for City">
+            </form>
+            <ul id="search-list"></ul>
+        </div>
     </div>
     
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -60,8 +93,27 @@
       <script type="text/javascript">
         //globals
         var date = moment().format("MMM Do YYYY")
+        var searchList = $(".search-list")
+        var savedCities = [];
+        getCities()
 
-        $("#find-city").on("click", function(event) {
+        //function to save cities to local store 
+        function saveCity() {
+            var cityToSave = JSON.stringify(savedCities)
+            localStorage.setItem("cities", cityToSave)
+        }
+        
+        //get citys from local storage 
+        function getCities() {
+            var str = localStorage.getItem('cities')
+            savedCities = JSON.parse(str)
+            if (!savedCities) {
+                savedCities = []
+            }
+        }  
+
+
+        $("#find-city").on("click", function currentCity(event) {
 
         // event.preventDefault() can be used to prevent an event's default behavior.
         // Here, it prevents the submit button from trying to submit a form when clicked
@@ -102,7 +154,7 @@
             var tempF = (response.main.temp - 273.15) * 1.80 + 32;
     
             // add temp content to html
-            $(".temp").text("Temperature (K) " + response.main.temp);
+            //$(".temp").text("Temperature (K) " + response.main.temp);
             $(".tempF").text("Temperature (F) " + tempF.toFixed(2));
     
             // Log the data in the console as well
@@ -110,6 +162,7 @@
             console.log("Humidity: " + response.main.humidity);
             console.log("Temperature (F): " + tempF);
           });
+
         }); 
       </script>
     </body>
